@@ -1,28 +1,21 @@
 import yagmail
 import os
+import pandas
 
 sender = 'senderdemo@gmail.com'
-receiver = 'g5bdwc3m@flymail.tk'
 
 subject = 'This is the subject'
 
-contents = """
-Here is the content of the email
-Hi!
-"""
+yag = yagmail.SMTP(user=sender, password=os.getenv('PASSWORD'))
 
-password = os.getenv('PSWD')
-if not password:
-    print("Error: PSWD environment variable not set.")
-else:
-    print("PSWD environment variable is set.")
+df = pandas.read_csv('contacts.csv')
+# print(df)
 
-try:
-    yag = yagmail.SMTP(user=sender, password=password)
-    print("SMTP client initialized.")
-
-    yag.send(to=receiver, subject=subject, contents=contents)
+for index, row in df.iterrows():
+    contents = f"""
+    Hi {row['name']} the content of the email
+    Hi!
+    """
+    yag.send(to=row['email'], subject=subject, contents=contents)
     print("Email Sent!")
 
-except Exception as e:
-    print(f"An error occurred: {e}")
